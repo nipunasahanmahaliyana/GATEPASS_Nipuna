@@ -1,0 +1,761 @@
+﻿@{
+    ViewData["Title"] = "New Request Page";
+}
+
+<div class="text-center page-title">
+    <h1 class="display-4" style="font-size: 30px;">New Request</h1>
+
+</div>
+
+<br>
+
+<form asp-action="SaveRequest" method="post">
+
+
+    <!-- Sender Details -->
+
+    <div class="box">
+        <h5>Sender Details</h5>
+
+        <form id="senderDetailsForm">
+
+            <div class="form-group">
+                <label for="senderServiceNo">ServiceNo</label>
+                <input type="text" class="form-control" id="senderServiceNo" name="senderServiceNo" readonly >
+
+            </div>
+
+            <div class="form-group">
+                <label for="senderSection">Section</label>
+                <input type="text" class="form-control" id="senderSection" name="senderSection" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="senderName">Name</label>
+                <input type="text" class="form-control" id="senderName" name="senderName" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="senderGroup">Group</label>
+                <input type="text" class="form-control" id="senderGroup" name="senderGroup" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="senderDesignation">Designation</label>
+                <input type="text" class="form-control" id="senderDesignation" name="senderDesignation" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="senderContactNo">Contact No</label>
+                <input type="text" class="form-control" id="senderContactNo" name="senderContactNo" readonly>
+            </div>
+
+            <div class="form-group">
+                <br>
+                <button type="button" class="btn btn-warning" id="clearSenderDetails" onclick="clearUserInfoDetailsFields()">Clear</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div>
+        <br>
+    </div>
+
+
+    <!-- Carrier Details -->
+
+
+    <div class="box">
+        <h5>Carrier Details</h5>
+        <button type="button" class="btn btn-primary btn-sm mt-3" onclick="toggleCarrierDetailsForm()">Add Carrier Details</button>
+        <div><br></div>
+        <div>
+
+            <form id="careerDetailsForm" style="display:none">
+
+                <div class="form-group">
+                    <label for="carrierName">Carrier Name</label>
+                    <input type="text" class="form-control" id="carrierName" name="carrierName">
+                </div>
+
+                <div class="form-group">
+                    <label for="carrierNicNo">NIC No</label>
+                    <input type="text" class="form-control" id="carrierNicNo" name="carrierNicNo" oninput="validateNICOnInput()">
+                    <span id="nicValidationMessage" style="color: red;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="carrierContactNo">Contact No</label>
+                    <input type="text" class="form-control" id="carrierContactNo" name="carrierContactNo" oninput="validateMobileOnInput()">
+                    <span id="mobileValidationMessage" style="color: red;"></span>
+                </div>
+
+                <div>
+                    <br>
+                    <button type="button" class="btn btn-danger" onclick="clearAndHideCarrierDetailsForm()">Remove</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div>
+        <br>
+    </div>
+
+
+    <!-- Items Details -->
+
+    <div class="box">
+        <h5>Items Details</h5>
+        <table class="table" id="itemTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Item Name</th>
+                    <th>Photos</th>
+                    <th>Serial No</th>
+                    <th>Returnable</th>
+                    <th>Due Date</th>
+                    <th>Item Category</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="itemTableBody1">
+                <tr>
+                    <td>1</td>
+                    <td><input type="text" class="form-control" id="itemName1" name="itemName1" /></td>
+
+                    <td>
+                        <input type="file" class="form-control-file" id="itemPhotos1" name="itemPhotos1" onchange="displayImage(this)" />
+                        <img id="previewImage" src="#" alt="Preview Image" style="display: none; max-width: 300px; max-height: 300px;" />
+                    </td>
+
+                    <td><input type="text" class="form-control" id="itemSerialNo1" name="itemSerialNo1" /></td>
+                    <td>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="returnableYes1" name="returnable1" value="Yes">
+                            <label class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="returnableNo1" name="returnable1" value="No">
+                            <label class="form-check-label">No</label>
+                        </div>
+                    </td>
+
+                    <td><input type="date" class="form-control" id="dueDate1" name="dueDate1" style="display: none;" /></td>
+
+                    <td>
+                        <select class="form-control" id="itemCategory1" name="itemCategory1">
+                            <option value="" disabled selected hidden>--- Select ---</option>
+                            @foreach (var category in ViewBag.ItemCategories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                    </td>
+
+                    <td><textarea class="form-control" id="itemDescription1" name="itemDescription1" rows="3"></textarea></td>
+                    <td><button type="button" class="btn btn-danger" onclick="removeItemRow(this)">Remove</button></td>
+                    <td><button type="button" class="btn btn-primary" onclick="addItemRow()">Add Item</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <h6>Note I: If the items you enter here are returnable, they must be returned within 3 days.</h6>
+        <h6>Note II: Only 10 items can be entered here at once. </h6>
+
+        @*<button type="button" class="btn btn-primary" onclick="addItemRow()">Add Item</button>*@
+    </div>
+
+    <div>
+        <br>
+    </div>
+
+
+
+    <!-- Location Details -->
+
+    <div class="box">
+        <h5>Location Details</h5>
+
+        <form id="locationDetailsForm">
+
+            <div class="form-group">
+                <label for="outLocation">Out Location</label>
+                <select class="form-control" id="outLocation" name="outLocation">
+                    <option value="" disabled selected hidden>--- Select ---</option>
+                    @foreach (var location in ViewBag.Locations)
+                    {
+                        <option value="@location">@location</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="sltInLocation">SLT In Location</label>
+                <select class="form-control" id="sltInLocation" name="sltInLocation">
+                    <option value="" disabled selected hidden>--- Select ---</option>
+                    @foreach (var location in ViewBag.Locations)
+                    {
+                        <option value="@location">@location</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label for="executiveOfficer">Select Executive Officer</label>
+                <select class="form-control" id="executiveOfficer" name="executiveOfficer">
+                    <option value="" disabled selected hidden>--- Select ---</option>
+                </select>
+            </div>
+
+
+        </form>
+    </div>
+
+    <div>
+        <br>
+    </div>
+
+    <!-- Receiver Details -->
+
+    <div class="box">
+
+        <h2>Receiver Details</h2>
+
+        <form id="receiverDetailsForm">
+
+            <div class="form-group">
+                <label>Receiver Available</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="receiverAvailableYes" name="receiverAvailable" value="Yes">
+                    <label class="form-check-label" for="receiverAvailableYes">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="receiverAvailableNo" name="receiverAvailable" value="No">
+                    <label class="form-check-label" for="receiverAvailableNo">No</label>
+                </div>
+            </div>
+
+            <div id="receiverDetailsFields" style="display: none;">
+                <div class="form-group">
+                    <label for="receiverServiceNo">Service No</label>
+                    <input type="text" class="form-control" id="receiverServiceNo" name="receiverServiceNo">
+                </div>
+
+                <div class="form-group">
+                    <label for="receiverGroup">Group</label>
+                    <input type="text" class="form-control" id="receiverGroup" name="receiverGroup">
+                </div>
+
+                <div class="form-group">
+                    <label for="receiverName">Name</label>
+                    <input type="text" class="form-control" id="receiverName" name="receiverName">
+                </div>
+
+                <div class="form-group">
+                    <label for="receiverContactNo">Contact No</label>
+                    <input type="text" class="form-control" id="receiverContactNo" name="receiverContactNo">
+                </div>
+
+                <div class="form-group">
+                    <br>
+                    <button type="button" class="btn btn-warning" id="clearReceiverDetails">Clear</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+    <!-- Submit Form -->
+
+    <div class="container p-0 mt-4">
+        <div class="row">
+            <div class="col d-flex justify-content-between">
+                <a href="@Url.Action("Index", "Home")" class="text-decoration-none"><button class="btn btn-sm btn-secondary" style="font-size:16px"><b>&#171;</b>Back to Home</button></a>
+                <button type="submit" class="btn btn-primary btn-sm" style="font-size:16px" onclick="saveData()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('input[type=radio][name=receiverAvailable]').change(function () {
+                if (this.value == 'Yes') {
+                    $('#receiverDetailsFields').show();
+                }
+                else if (this.value == 'No') {
+                    $('#receiverDetailsFields').hide();
+                }
+            });
+        });
+        $(document).ready(function () {
+            // Attach the event listener to the table and listen for changes on radio buttons within the table
+            $('#itemTable').on('change', 'input[type=radio][name^=returnable]', function () {
+                // Get the row number from the name of the changed radio button
+                var rowNumber = this.name.replace('returnable', '');
+
+                // Show or hide the date field based on the selected value
+                if (this.value == 'Yes') {
+                    $('#dueDate' + rowNumber).show();
+                } else {
+                    $('#dueDate' + rowNumber).hide();
+                }
+            });
+        });
+
+
+
+    </script>
+}
+
+<script>
+
+
+    // # User Info Details #
+
+    // Function to fetch User Info Details and fill out the form
+    // User Service No input and other fields are auto filled
+    //window.onload = function () {
+    //    $.ajax({
+    //        url: '/NewRequest/GetUserInfoDetails',
+    //        type: 'GET',
+    //        success: function (data) {
+    //            // Fill the form fields with the returned data
+    //            $('#senderServiceNo').val(data.serviceNo);
+    //            $('#senderSection').val(data.section);
+    //            $('#senderName').val(data.name);
+    //            $('#senderGroup').val(data.group);
+    //            $('#senderDesignation').val(data.designation);
+    //            $('#senderContactNo').val(data.phone);
+    //        },
+    //        error: function (jqXHR, textStatus, errorThrown) {
+    //            // Handle any errors here
+    //            console.log(textStatus, errorThrown);
+    //        }
+    //    });
+    //};
+
+
+
+    window.onload = function () {
+        $.ajax({
+            url: '/NewRequest/GetUserInfoDetails',
+            type: 'GET',
+            success: function (data) {
+                // Fill the form fields with the returned data
+                $('#senderServiceNo').val(data.serviceNo);
+                $('#senderSection').val(data.section);
+                $('#senderName').val(data.name);
+                $('#senderGroup').val(data.group);
+                $('#senderDesignation').val(data.designation);
+                $('#senderContactNo').val(data.phone);
+
+                // After the sender details are filled, populate the executiveOfficer dropdown
+                var group = $('#senderGroup').val();
+
+                $.ajax({
+                    url: '/NewRequest/GetExecutiveOfficers',
+                    type: 'GET',
+                    data: { 'group': group },
+                    success: function (data) {
+                        // Clear the dropdown
+                        $('#executiveOfficer').empty();
+
+                        // Add the default option
+                        $('#executiveOfficer').append('<option value="" disabled selected hidden>--- Select ---</option>');
+
+                        // Fill the dropdown with the returned data
+                        $.each(data, function (i, officer) {
+                            $('#executiveOfficer').append('<option value="' + officer + '">' + officer + '</option>');
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Handle any errors here
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // Handle any errors here
+                console.log(textStatus, errorThrown);
+            }
+        });
+    };
+
+
+
+
+
+
+
+    // Function to Clear User Info Details Form
+    function clearUserInfoDetailsFields() {
+        document.getElementById("senderServiceNo").value = "";
+        document.getElementById("senderName").value = "";
+        document.getElementById("senderDesignation").value = "";
+        document.getElementById("senderContactNo").value = "";
+        document.getElementById("senderSection").value = "";
+        document.getElementById("senderGroup").value = "";
+    }
+
+    document.getElementById("clearUserInfoDetails").addEventListener("click", clearUserInfoDetailsFields);
+
+
+
+
+    // # Carrier Details #
+
+    // Carrier Details Form Dispaly
+    // Click the 'Add Carrier Details' button Display the Carrier Details Form
+    function toggleCarrierDetailsForm() {
+        const carrierDetailsForm = document.getElementById("careerDetailsForm");
+        if (carrierDetailsForm.style.display === "none" || carrierDetailsForm.style.display === "") {
+            carrierDetailsForm.style.display = "block";
+        } else {
+            carrierDetailsForm.style.display = "none";
+        }
+    }
+
+    // Function to Remove Carrier Details Form
+    function clearAndHideCarrierDetailsForm() {
+        const carrierDetailsForm = document.getElementById("careerDetailsForm");
+        carrierDetailsForm.reset();
+        carrierDetailsForm.style.display = "none";
+    }
+
+
+    // # Items Details #
+
+    // Items Details of Returnable Items Field
+
+
+
+
+    function addItemRow() {
+        // Get the current number of rows
+        var rowCount = $('#itemTable tr').length;
+
+        // Check if the maximum number of rows is reached
+        if (rowCount > 10) {
+            alert('Maximum number of items is 10.');
+            return;
+        }
+
+        // Generate the HTML for the new row
+        var newRow = `
+        <tr>
+            <td>${rowCount}</td>
+            <td><input type="text" class="form-control" id="itemName${rowCount}" name="itemName${rowCount}" /></td>
+            <td>
+                <input type="file" class="form-control-file" id="itemPhotos${rowCount}" name="itemPhotos${rowCount}" onchange="displayImage(this)" />
+                <img id="previewImage" src="#" alt="Preview Image" style="display: none; max-width: 300px; max-height: 300px;" />
+            </td>
+            <td><input type="text" class="form-control" id="itemSerialNo${rowCount}" name="itemSerialNo${rowCount}" /></td>
+            <td>
+                <div class="form-check custom-checkbox">
+                <input type="radio" class="form-check-input" id="returnableYes${rowCount}" name="returnable${rowCount}" value="Yes">
+                <label class="form-check-label">Yes</label>
+                </div>
+                <div class="form-check custom-checkbox">
+                <input type="radio" class="form-check-input" id="returnableNo${rowCount}" name="returnable${rowCount}" value="No">
+                <label class="form-check-label">No</label>
+                </div>
+            </td>
+            <td><input type="date" class="form-control" id="dueDate${rowCount}" name="dueDate${rowCount}" style="display: none;" /></td>
+            <td>
+                <select class="form-control" id="itemCategory${rowCount}" name="itemCategory${rowCount}">
+                    <option value="" disabled selected hidden>--- Select ---</option>
+                    @foreach (var category in ViewBag.ItemCategories)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+            </td>
+            <td><textarea class="form-control" id="itemDescription${rowCount}" name="itemDescription${rowCount}" rows="3"></textarea></td>
+            <td><button type="button" class="btn btn-danger always-red" onclick="removeItemRow(this)">Remove</button></td>
+        </tr>`;
+
+        // Append the new row to the table after a slight delay
+        setTimeout(function () {
+            $('#itemTable').append(newRow);
+        }, 100);  // 100 milliseconds delay
+    }
+
+
+    function displayImage() {
+        const input = document.getElementById('itemPhotos');
+        const previewImage = document.getElementById('previewImage');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            previewImage.style.display = 'none';
+        }
+    }
+
+    function displayImage(input) {
+        const previewImage = input.nextElementSibling; // Find the sibling img element
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            previewImage.style.display = 'none';
+        }
+    }
+
+    // # Receiver Details #
+
+    // Show and Hide Receiver Details Form and Fields
+    // Select Receiver Available 'Yes' then Display Receiver Details Form
+    // Select Receiver Availabe 'No' then not Display Receiver Details Form
+    const receiverAvailableYesRadio = document.getElementById("receiverAvailableYes");
+    const receiverAvailableNoRadio = document.getElementById("receiverAvailableNo");
+    const receiverDetailsFields = document.getElementById("receiverDetailsFields");
+
+    function updateReceiverDetailsDisplay() {
+        if (receiverAvailableYesRadio.checked) {
+            receiverDetailsFields.style.display = "block";
+        } else {
+            receiverDetailsFields.style.display = "none";
+        }
+    }
+
+    updateReceiverDetailsDisplay();
+
+    receiverAvailableYesRadio.addEventListener("change", updateReceiverDetailsDisplay);
+    receiverAvailableNoRadio.addEventListener("change", updateReceiverDetailsDisplay);
+
+
+    // Function to Fetch Receiver Details and Populate Form Fields
+    // Input Receiver Service No after that other fields are auto filled
+    function fetchReceiverDetails() {
+        const serviceNo = document.getElementById("receiverServiceNo").value;
+
+        $.ajax({
+            type: "GET",
+            url: `/NewRequest/GetReceiverDetails?serviceNo=${serviceNo}`,
+            success: function (data) {
+                // Populate the Form Fields with Retrieved Data
+                document.getElementById("receiverGroup").value = data.group;
+                document.getElementById("receiverName").value = data.name;
+                document.getElementById("receiverContactNo").value = data.contactNo;
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    document.getElementById("receiverServiceNo").addEventListener("change", fetchReceiverDetails);
+
+
+    // Function to Clear Receiver Details Fields
+    function clearReceiverDetailsFields() {
+        document.getElementById("receiverServiceNo").value = "";
+        document.getElementById("receiverName").value = "";
+        document.getElementById("receiverGroup").value = "";
+        document.getElementById("receiverContactNo").value = "";
+    }
+
+    document.getElementById("clearReceiverDetails").addEventListener("click", clearReceiverDetailsFields);
+
+
+
+    function validateNICOnInput() {
+        var nicNo = document.getElementById('carrierNicNo').value;
+        var nicRegex = /^[0-9]{9,12}[vVxX]?$/; // Adjust the regex based on your NIC format
+
+        if (nicRegex.test(nicNo)) {
+            // NIC is valid
+            clearNICValidationMessage();
+            // Additional logic if needed
+        } else {
+            // NIC is invalid
+            displayNICValidationMessage("Invalid NIC Number Format");
+            // Additional logic if needed
+        }
+    }
+
+    function displayNICValidationMessage(message) {
+        // Display the NIC validation error message in the span element
+        document.getElementById('nicValidationMessage').innerText = message;
+    }
+
+    function clearNICValidationMessage() {
+        // Clear the NIC validation error message
+        document.getElementById('nicValidationMessage').innerText = '';
+    }
+
+
+
+
+    function validateMobileOnInput() {
+        var mobileNo = document.getElementById('carrierContactNo').value;
+        var mobileRegex = /^0\d{9}$/; // Adjust the regex based on your NIC format
+
+        if (mobileRegex.test(mobileNo)) {
+            // NIC is valid
+            clearmobileValidationMessage();
+            // Additional logic if needed
+        } else {
+            // NIC is invalid
+            displaymobileValidationMessage("Invalid Contact Number Format");
+            // Additional logic if needed
+        }
+    }
+
+    function displaymobileValidationMessage(message) {
+        // Display the NIC validation error message in the span element
+        document.getElementById('mobileValidationMessage').innerText = message;
+    }
+
+    function clearmobileValidationMessage() {
+        // Clear the NIC validation error message
+        document.getElementById('mobileValidationMessage').innerText = '';
+    }
+
+
+
+    function removeItemRow(button) {
+        const row = button.closest("tr");
+        row.remove();
+    }
+
+    function saveData() {
+        // Create the dictionaries and the FormData object
+        var requestData = {};
+        var carrierData = {};
+        var formData = new FormData();
+        var itemDetails = [];
+
+        // Populate the requestData dictionary
+        requestData["ServiceNo"] = $("#senderServiceNo").val();
+        requestData["SLTInLocation"] = $("#sltInLocation").val();
+        requestData["OutLocation"] = $("#outLocation").val();
+        requestData["ExecutiveOfficer"] = $("#executiveOfficer").val();
+        requestData["NICNo"] = $("#carrierNicNo").val();
+        requestData["ReceiverServiceNo"] = $("#receiverServiceNo").val();
+
+        // Populate the carrierData dictionary
+        carrierData["CarrierName"] = $("#carrierName").val();
+        carrierData["NICNo"] = $("#carrierNicNo").val();
+        carrierData["Contactno"] = $("#carrierContactNo").val();
+
+        // Loop through the items
+        for (var i = 1; i <= 10; i++) {
+            // Add the image file to the FormData object
+            var fileInput = document.getElementById("itemPhotos" + i);
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                // Create a dictionary for the current item
+                var item = {};
+
+                // Populate the item dictionary
+                item["ItemName"] = $("#itemName" + i).val();
+                item["ItemSerialNo"] = $("#itemSerialNo" + i).val();
+                item["ItemCategory"] = $("#itemCategory" + i).val();
+                item["ItemDescription"] = $("#itemDescription" + i).val();
+                item["Returnable"] = $("input[name='returnable" + i + "']:checked").val();
+
+                // Add the item dictionary to the itemDetails list
+                itemDetails.push(item);
+
+                // Add the file to the FormData object
+                formData.append("itemPhotos" + i, fileInput.files[0]);
+            }
+        }
+
+
+        // Add the dictionaries and the list to the FormData object
+        formData.append("requestData", JSON.stringify(requestData));
+        formData.append("carrierData", JSON.stringify(carrierData));
+        formData.append("itemDetails", JSON.stringify(itemDetails));
+
+        // Now you can call the server-side method with these parameters
+        $.ajax({
+            url: '@Url.Action("CheckLogin", "NewRequest")',  // Replace with your actual controller and method
+            type: 'POST',
+            data: formData,
+            processData: false,  // Don't process the data
+            contentType: false,  // Don't set a content type
+            success: function (response) {
+                if (response.isdone) {
+                    alert("Record Added UnSuccessfully");
+                } else {
+                    alert("Record Added Successfully");
+                }
+                window.location.href = '@Url.Action("Index", "Home")';
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error(errorThrown);
+                alert("Error: Check the Details and Please Try Again.");
+            }
+        });
+    }
+
+
+
+    
+
+
+</script>
+
+
+<style>
+    .box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 10px 0;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+        .box h5 {
+            margin-top: 0;
+        }
+
+    tr {
+        border: 1px solid black; /* Set the border color to black for the specific table */
+    }
+
+    table, th, td {
+        border: 1px solid #000000;
+    }
+
+    .custom-checkbox {
+        margin-left: 20px;
+    }
+
+    .always-red {
+        background-color: red !important;
+    }
+</style>
