@@ -20,6 +20,7 @@ namespace GatePass_Project.Models
         public string? Item_serial_no { get; set; }
         public string? Item_name { get; set; }
         public string? Item_Description { get; set; }
+        public int Item_Quantity { get; set; }
         public int Item_id { get; set; }
 
         public string Returnable_status { get; set; }

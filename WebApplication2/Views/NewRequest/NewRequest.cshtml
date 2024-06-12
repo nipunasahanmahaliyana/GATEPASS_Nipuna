@@ -116,6 +116,7 @@
                     <th>Item Name</th>
                     <th>Photos</th>
                     <th>Serial No</th>
+                    <th>Quantity</th>
                     <th>Returnable</th>
                     <th>Due Date</th>
                     <th>Item Category</th>
@@ -134,6 +135,7 @@
                     </td>
 
                     <td><input type="text" class="form-control" id="itemSerialNo1" name="itemSerialNo1" /></td>
+                    <td><input type="text" class="form-control" id="quantity1" name="quantity" /></td>
                     <td>
                         <div class="form-check">
                             <input type="radio" class="form-check-input" id="returnableYes1" name="returnable1" value="Yes">
@@ -681,6 +683,7 @@
                 // Populate the item dictionary
                 item["ItemName"] = $("#itemName" + i).val();
                 item["ItemSerialNo"] = $("#itemSerialNo" + i).val();
+                item["Quantity"] = $("#quantity" + i).val();
                 item["ItemCategory"] = $("#itemCategory" + i).val();
                 item["ItemDescription"] = $("#itemDescription" + i).val();
                 item["Returnable"] = $("input[name='returnable" + i + "']:checked").val();

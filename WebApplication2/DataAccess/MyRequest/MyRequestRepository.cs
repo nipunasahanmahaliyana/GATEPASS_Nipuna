@@ -137,7 +137,7 @@ namespace GatePass_Project.DataAccess.MyRequest
             {
                 connection.Open();
 
-                string query = "SELECT i.Item_id, i.Item_serial_no,i.Item_name, i.Item_description, i.Returnable_status, " +
+                string query = "SELECT i.Item_id, i.Item_serial_no,i.Item_name, i.Item_description,i.Item_Quantity, i.Returnable_status, " +
                              "i.Request_ref_no, i.Attaches " +
                              "FROM Items i " +
 
@@ -159,8 +159,9 @@ namespace GatePass_Project.DataAccess.MyRequest
                                     Item_serial_no = reader.GetString(1),
                                     Item_name = reader.GetString(2),
                                     Item_Description = reader.GetString(3),
-                                    Returnable_status = reader.GetString(4),
-                                    Request_ref_no = reader.GetInt32(5),
+                                    Item_Quantity = reader.GetInt32(4),
+                                    Returnable_status = reader.GetString(5),
+                                    Request_ref_no = reader.GetInt32(6),
                                     Attaches = reader["Attaches"] as byte[],
 
                                 };

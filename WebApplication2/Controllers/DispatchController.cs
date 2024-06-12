@@ -57,7 +57,7 @@ namespace GatePass_Project.Controllers
             ViewBag.UserName = sessionUserName;
             try
             {
-                var requests = _dispatchRepository.GetDispatchRequests();
+                var requests = _dispatchRepository.GetDispatchRequests(sessionUserName);
                 return View(requests);
             }
             catch (Exception)

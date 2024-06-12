@@ -74,7 +74,6 @@ namespace GatePass.DataAccess.ItemTracker
                 string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description, i.Returnable_status, " +
                             " i.Request_ref_no,  i.Attaches " +
                             "FROM Items i " +
-
                             "WHERE i.Request_ref_no = @id";
 
                 try

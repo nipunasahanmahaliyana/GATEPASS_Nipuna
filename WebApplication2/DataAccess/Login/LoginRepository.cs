@@ -94,6 +94,7 @@ namespace GatePass.DataAccess.Login
                             }
 
                             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, "custom")));
+                            httpContext.Session.SetString("UserName", model.NIC);
 
                             tempData["Message"] = $"{reader.GetString(reader.GetOrdinal("RoleName"))} {model.NIC} logged in successfully!";
                             return new RedirectToActionResult("Index", "Home", NIC);

@@ -453,6 +453,7 @@ namespace GatePass.DataAccess.ItemCategory
                                 // Use the item dictionary
                                 string itemName = item["ItemName"];
                                 string itemSerialNo = item["ItemSerialNo"];
+                                string itemQuantity = item["Quantity"];
                                 string itemCategory = item["ItemCategory"];
                                 string itemDescription = item["ItemDescription"];
                                 string returnable = item["Returnable"];
@@ -460,7 +461,7 @@ namespace GatePass.DataAccess.ItemCategory
                                 int categoryId = GetCategoryIdForItem(itemCategory);
 
                                 // Additional Query 3: Insert into Items
-                                string insertSql3 = "INSERT INTO Items (Item_serial_no, Item_name, Item_description, Returnable_status, Created_date, Category_id, Request_ref_no, Verified_items, Attaches) VALUES (@Itemserialno, @Itemname, @Itemdescription, @Returnablestatus, @Duedate, @Categoryid, @Requestrefno, @Verifieditems, @Attaches)";
+                                string insertSql3 = "INSERT INTO Items (Item_serial_no, Item_name, Item_description, Returnable_status, Created_date, Category_id, Request_ref_no, Verified_items, Attaches,Item_Quantity) VALUES (@Itemserialno, @Itemname, @Itemdescription, @Returnablestatus, @Duedate, @Categoryid, @Requestrefno, @Verifieditems, @Attaches,@itemQuantity)";
 
                                 using (SqlCommand cmd3 = new SqlCommand(insertSql3, connection, transaction))
                                 {
@@ -483,6 +484,7 @@ namespace GatePass.DataAccess.ItemCategory
                                     cmd3.Parameters.AddWithValue("@Categoryid", categoryId);
                                     cmd3.Parameters.AddWithValue("@Requestrefno", requestRefNo); // Need to define requestRefNo
                                     cmd3.Parameters.AddWithValue("@Verifieditems", VerifiedItems); // Define VerifiedItems
+                                    cmd3.Parameters.AddWithValue("@itemQuantity", itemQuantity);
                                     cmd3.Parameters.Add("@Attaches", SqlDbType.VarBinary, -1).Value = imageBytes;
 
                                     int rowsAffected = cmd3.ExecuteNonQuery();

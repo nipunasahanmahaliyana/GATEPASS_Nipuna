@@ -29,11 +29,12 @@ namespace GatePass_Project.Controllers
 
         public IActionResult Verify()
         {
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
             try
             {
-                var requests = _doVerifyRepository.Verify();
+                var requests = _doVerifyRepository.Verify(sessionUserName);
                 return View(requests);
             }
             catch (Exception)
@@ -44,8 +45,8 @@ namespace GatePass_Project.Controllers
 
         public IActionResult Approve(int requestRefNo)
         {
-
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
 
             try
@@ -57,13 +58,14 @@ namespace GatePass_Project.Controllers
             {
                 return RedirectToAction("Error");
             }
+
         }
 
         [HttpPost]
         public IActionResult Reject(int requestRefNo, string rejectComment)
         {
-
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
 
             try
@@ -75,12 +77,13 @@ namespace GatePass_Project.Controllers
             {
                 return RedirectToAction("Error");
             }
+
         }
 
         public IActionResult ViewPendingDetails(int id)
         {
-
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
 
             // Retrieve item details for the given Request_ref_no
@@ -93,35 +96,36 @@ namespace GatePass_Project.Controllers
             }
 
             return View(items);
+
+
         }
 
-        public IActionResult Pending()
+        public IActionResult Pending(int id)
         {
-
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
-
-            List<VerifyModel> pendingRequests = _doVerifyRepository.GetRequestsByStageId(2);
+            List<VerifyModel> pendingRequests = _doVerifyRepository.GetRequestsByStageId(2,sessionUserName);
             return View("Verify", pendingRequests);
         }
 
         public IActionResult Verified()
         {
-
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
 
-            List<VerifyModel> verifiedRequests = _doVerifyRepository.GetRequestsByStageId(5);
+            List<VerifyModel> verifiedRequests = _doVerifyRepository.GetRequestsByStageId(5,sessionUserName);
             return View("Verify", verifiedRequests);
         }
 
         public IActionResult Rejected()
         {
-
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
 
-            List<VerifyModel> rejectedRequests = _doVerifyRepository.GetRequestsByStageId(6);
+            List<VerifyModel> rejectedRequests = _doVerifyRepository.GetRequestsByStageId(6,sessionUserName);
             return View("Verify", rejectedRequests);
         }
 

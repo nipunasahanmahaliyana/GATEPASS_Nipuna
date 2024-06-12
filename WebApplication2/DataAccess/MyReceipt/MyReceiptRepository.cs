@@ -16,8 +16,9 @@ namespace GatePass.DataAccess.MyReceipt
             _logger = logger;
         }
 
-        public List<MyreceiptModel> Index()
+        public List<MyreceiptModel> Index(string session_no)
         {
+            string query = "";
             List<MyreceiptModel> requests = new List<MyreceiptModel>();
 
             try
@@ -25,14 +26,26 @@ namespace GatePass.DataAccess.MyReceipt
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
-                        "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no," +
-                        "ui.Name " +
-                        "FROM Requests r " +
-                        "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
-                        "WHERE r.Receiver_service_no IS NOT NULL " +
-                        "AND r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 7 )";
-
+                    if (session_no == "019559")
+                    {
+                        query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
+                            "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no," +
+                            "ui.Name " +
+                            "FROM Requests r " +
+                            "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
+                            "WHERE r.Receiver_service_no IS NOT NULL " +
+                            "AND r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 7 )";
+                    }
+                    else
+                    {
+                        query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
+                            "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no," +
+                            "ui.Name " +
+                            "FROM Requests r " +
+                            "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
+                            "WHERE r.Receiver_service_no IS NOT NULL " +
+                            "AND r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 20 )";
+                    }
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -74,7 +87,7 @@ namespace GatePass.DataAccess.MyReceipt
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description, i.Returnable_status, i.Request_ref_no, i.Attaches " +
+                string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description,i.Item_Quantity, i.Returnable_status, i.Request_ref_no, i.Attaches " +
                         "FROM Items i " +
                         "WHERE i.Request_ref_no = @id";
                 try
@@ -95,8 +108,9 @@ namespace GatePass.DataAccess.MyReceipt
                                     Item_serial_no = reader.GetString(1),
                                     Item_name = reader.GetString(2),
                                     Item_description = reader.GetString(3),
-                                    Returnable_status = reader.GetString(4),
-                                    Request_ref_no = reader.GetInt32(5), // Include Request_ref_no
+                                    Item_Quantity = reader.GetInt32(4),
+                                    Returnable_status = reader.GetString(5),
+                                    Request_ref_no = reader.GetInt32(6), // Include Request_ref_no
                                     Attaches = reader["Attaches"] as byte[],
                                 };
 

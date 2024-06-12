@@ -32,7 +32,7 @@ namespace My_receipt_gate_pass.Controllers
             ViewBag.UserName = sessionUserName;
             try
             {
-                var requests = _receiptRepository.Index();
+                var requests = _receiptRepository.Index(sessionUserName);
                 return View(requests);
             }
             catch (Exception)

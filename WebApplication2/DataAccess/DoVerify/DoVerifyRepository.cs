@@ -15,41 +15,55 @@ namespace GatePass.DataAccess.DoVerify
             _logger = logger;
         }
 
-        public List<VerifyModel> Verify()
+        public List<VerifyModel> Verify(string session_no)
         {
             List<VerifyModel> requests = new List<VerifyModel>();
-
+            string query = "";
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
-                        "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no, " +
-                        "ui.Name " +
-                        "FROM Requests r " +
-                        "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
-                        "WHERE r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 2) ORDER BY Created_date DESC";
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    if (session_no == "019556")
                     {
-                        while (reader.Read())
+                        query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
+                            "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no, " +
+                            "ui.Name " +
+                            "FROM Requests r " +
+                            "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
+                            "WHERE r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 2)  ORDER BY Created_date DESC";
+                    }
+                    else
+                    {
+                        query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
+                            "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no, " +
+                            "ui.Name " +
+                            "FROM Requests r " +
+                            "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
+                            "WHERE r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 20) ORDER BY Created_date DESC";
+                    }
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                       
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            VerifyModel request = new VerifyModel
+                            while (reader.Read())
                             {
-                                Request_ref_no = reader.GetInt32(0),
-                                Sender_service_no = reader.GetString(1),
-                                In_location_name = reader.GetString(2),
-                                Out_location_name = reader.GetString(3),
-                                Receiver_service_no = reader.IsDBNull(4) ? "No Specific Receiver" : reader.GetString(4),
-                                Created_date = reader.GetDateTime(5),
-                                ExO_service_no = reader.GetString(6),
-                                Carrier_nic_no = reader.IsDBNull(7) ? "No Specific Carrier" : reader.GetString(7),
-                                Name = reader.GetString(8)
-                            };
+                                VerifyModel request = new VerifyModel
+                                {
+                                    Request_ref_no = reader.GetInt32(0),
+                                    Sender_service_no = reader.GetString(1),
+                                    In_location_name = reader.GetString(2),
+                                    Out_location_name = reader.GetString(3),
+                                    Receiver_service_no = reader.IsDBNull(4) ? "No Specific Receiver" : reader.GetString(4),
+                                    Created_date = reader.GetDateTime(5),
+                                    ExO_service_no = reader.GetString(6),
+                                    Carrier_nic_no = reader.IsDBNull(7) ? "No Specific Carrier" : reader.GetString(7),
+                                    Name = reader.GetString(8)
+                                };
 
-                            requests.Add(request);
+                                requests.Add(request);
+                            }
                         }
                     }
                 }
@@ -117,7 +131,7 @@ namespace GatePass.DataAccess.DoVerify
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description, i.Returnable_status, " +
+                string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description,i.Item_Quantity, i.Returnable_status, " +
                             " i.Request_ref_no,  i.Attaches " +
                             "FROM Items i " +
 
@@ -139,8 +153,9 @@ namespace GatePass.DataAccess.DoVerify
                                     Item_serial_no = reader.GetString(1),
                                     Item_name = reader.GetString(2),
                                     Item_Description = reader.GetString(3),
-                                    Returnable_status = reader.GetString(4),
-                                    Request_ref_no = reader.GetInt32(5), // Include Request_ref_no
+                                    Item_Quantity = reader.GetInt32(4), 
+                                    Returnable_status = reader.GetString(5),
+                                    Request_ref_no = reader.GetInt32(6), // Include Request_ref_no
                                     Attaches = reader["Attaches"] as byte[],
                                 };
 
@@ -159,14 +174,18 @@ namespace GatePass.DataAccess.DoVerify
             return itemsList;
         }
 
-        public List<VerifyModel> GetRequestsByStageId(int stageId)
+        public List<VerifyModel> GetRequestsByStageId(int stageId,string session_no)
         {
+            string query = "";
             List<VerifyModel> requests = new List<VerifyModel>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = @"
+                if (session_no == "019556")
+                {
+
+                    query = @"
             SELECT DISTINCT
                 r.Request_ref_no, 
                 r.Sender_service_no, 
@@ -182,7 +201,26 @@ namespace GatePass.DataAccess.DoVerify
                 INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo
             WHERE 
                 r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = @stageId)";
-
+                }
+                else
+                {
+                    query = @"
+            SELECT DISTINCT
+                r.Request_ref_no, 
+                r.Sender_service_no, 
+                r.In_location_name, 
+                r.Out_location_name, 
+                r.Receiver_service_no, 
+                r.Created_date, 
+                r.ExO_service_no, 
+                r.Carrier_nic_no, 
+                ui.Name 
+            FROM 
+                Requests r
+                INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo
+            WHERE 
+                r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 20)";
+                }
                 try
                 {
                     using (SqlCommand command = new SqlCommand(query, connection))

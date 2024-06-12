@@ -88,39 +88,54 @@ namespace GatePass_Project.Controllers
                 // Handle the case where no details are found for the given id, e.g., show an error message or redirect to an error page.
                 return RedirectToAction("Error");
             }
-
-            return View(items);
+            
+                return View(items);
+            
+           
         }
 
         public IActionResult Pending()
         {
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
-            List<ExeApproveModel> pendingRequests = _repository.GetRequestsByStageId(1);
-            return View("ExeApprove", pendingRequests);
+            List<ExeApproveModel> pendingRequests = _repository.GetRequestsByStageId(1,sessionUserName);
+          
+                return View("ExeApprove", pendingRequests);
+          
         }
 
         public IActionResult Approved()
         {
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
-            List<ExeApproveModel> approvedRequests = _repository.GetRequestsByStageId(2);
-            return View("ExeApprove", approvedRequests);
+            List<ExeApproveModel> approvedRequests = _repository.GetRequestsByStageId(2,sessionUserName);
+           
+                return View("ExeApprove", approvedRequests);
+         
         }
 
         public IActionResult Rejected()
         {
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
-            List<ExeApproveModel> rejectedRequests = _repository.GetRequestsByStageId(3);
-            return View("ExeApprove", rejectedRequests);
+            List<ExeApproveModel> rejectedRequests = _repository.GetRequestsByStageId(3,sessionUserName);
+            
+                return View("ExeApprove", rejectedRequests);
+          
         }
         public IActionResult Expired()
         {
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
-            List<ExeApproveModel> expiredRequests = _repository.GetRequestsByStageId(12);
-            return View("ExeApprove", expiredRequests);
+
+            List<ExeApproveModel> expiredRequests = _repository.GetRequestsByStageId(12,sessionUserName);
+           
+                return View("ExeApprove", expiredRequests);
+            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -134,6 +149,9 @@ namespace GatePass_Project.Controllers
         // Displaying Notifications when rejecting a request
         public IActionResult Notification()
         {
+            var sessionUserName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = sessionUserName;
+
             int commentCount = _repository.GetCommentCount();
             ViewData["CommentCount"] = commentCount;
 
@@ -193,11 +211,12 @@ namespace GatePass_Project.Controllers
 
         private List<ExeApproveModel> GetRequestsByStageId(int stageId)
         {
-            var sessionUserName = HttpContext.Session.GetString("UserName");
+            var sessionUserName = "";
+            sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
             try
             {
-                return _repository.GetRequestsByStageId(stageId);
+                return _repository.GetRequestsByStageId(stageId,sessionUserName);
             }
             catch (Exception)
             {

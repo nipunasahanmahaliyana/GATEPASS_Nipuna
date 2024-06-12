@@ -17,6 +17,7 @@ namespace GatePass.DataAccess.ExeApprove
 
         public List<ExeApproveModel> ExeApprove(string serviceNo)
         {
+
             List<ExeApproveModel> requests = new List<ExeApproveModel>();
 
             try
@@ -29,7 +30,7 @@ namespace GatePass.DataAccess.ExeApprove
     "ui.Name " +
     "FROM Requests r " +
     "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
-    "WHERE r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 1) AND r.ExO_service_no = @ServiceNo ORDER BY Created_date DESC";
+    "WHERE r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 1) AND r.ExO_service_no = @ServiceNO ORDER BY Created_date DESC";
 
 
                     using (SqlCommand command = new SqlCommand(query, connection))
@@ -196,7 +197,7 @@ namespace GatePass.DataAccess.ExeApprove
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description, i.Returnable_status, " +
+                string query = "SELECT i.Item_id, i.Item_serial_no, i.Item_name, i.Item_description,i.Item_Quantity, i.Returnable_status, " +
                             " i.Request_ref_no,  i.Attaches " +
                             "FROM Items i " +
 
@@ -218,8 +219,9 @@ namespace GatePass.DataAccess.ExeApprove
                                     Item_serial_no = reader.GetString(1),
                                     Item_name = reader.GetString(2),
                                     Item_Description = reader.GetString(3),
-                                    Returnable_status = reader.GetString(4),
-                                    Request_ref_no = reader.GetInt32(5), // Include Request_ref_no
+                                    Item_Quantity = reader.GetInt32(4),
+                                    Returnable_status = reader.GetString(5),
+                                    Request_ref_no = reader.GetInt32(6), // Include Request_ref_no
                                     Attaches = reader["Attaches"] as byte[],
                                 };
 
@@ -336,13 +338,14 @@ namespace GatePass.DataAccess.ExeApprove
             }
         }
 
-        public List<ExeApproveModel> GetRequestsByStageId(int stageId)
+        public List<ExeApproveModel> GetRequestsByStageId(int stageId,string service_no)
         {
             List<ExeApproveModel> requests = new List<ExeApproveModel>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
+
                 string query = @"
             SELECT DISTINCT
                 r.Request_ref_no, 
@@ -358,13 +361,13 @@ namespace GatePass.DataAccess.ExeApprove
                 Requests r
                 INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo
             WHERE 
-                r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = @stageId)";
-
+                r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = @stageId) AND r.ExO_service_no = @ServiceNo";
                 try
                 {
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@stageId", stageId);
+                        command.Parameters.AddWithValue("@ServiceNo", service_no);
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
