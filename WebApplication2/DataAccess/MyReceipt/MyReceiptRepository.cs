@@ -26,46 +26,39 @@ namespace GatePass.DataAccess.MyReceipt
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    if (session_no == "019559")
-                    {
+                  
                         query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
                             "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no," +
                             "ui.Name " +
                             "FROM Requests r " +
                             "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
-                            "WHERE r.Receiver_service_no IS NOT NULL " +
+                            "WHERE r.Receiver_service_no IS NOT NULL  AND r.Receiver_service_no = @session_no " +
                             "AND r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 7 )";
-                    }
-                    else
-                    {
-                        query = "SELECT DISTINCT r.Request_ref_no, r.Sender_service_no, r.In_location_name, r.Out_location_name, " +
-                            "r.Receiver_service_no, r.Created_date, r.ExO_service_no, r.Carrier_nic_no," +
-                            "ui.Name " +
-                            "FROM Requests r " +
-                            "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
-                            "WHERE r.Receiver_service_no IS NOT NULL " +
-                            "AND r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 20 )";
-                    }
+
+
 
                     using (SqlCommand command = new SqlCommand(query, connection))
-                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (reader.Read())
+                        command.Parameters.AddWithValue("@session_no", session_no);
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            MyreceiptModel request = new MyreceiptModel
+                            while (reader.Read())
                             {
-                                Request_ref_no = reader.GetInt32(0),
-                                Sender_service_no = reader.GetString(1),
-                                In_location_name = reader.GetString(2),
-                                Out_location_name = reader.GetString(3),
-                                Receiver_service_no = reader.IsDBNull(4) ? "No Specific Receiver" : reader.GetString(4),
-                                Created_date = reader.GetDateTime(5),
-                                ExO_service_no = reader.GetString(6),
-                                Carrier_nic_no = reader.IsDBNull(7) ? "No Specific Carrier" : reader.GetString(7),
-                                Name = reader.GetString(8),
-                            };
+                                MyreceiptModel request = new MyreceiptModel
+                                {
+                                    Request_ref_no = reader.GetInt32(0),
+                                    Sender_service_no = reader.GetString(1),
+                                    In_location_name = reader.GetString(2),
+                                    Out_location_name = reader.GetString(3),
+                                    Receiver_service_no = reader.IsDBNull(4) ? "No Specific Receiver" : reader.GetString(4),
+                                    Created_date = reader.GetDateTime(5),
+                                    ExO_service_no = reader.GetString(6),
+                                    Carrier_nic_no = reader.IsDBNull(7) ? "No Specific Carrier" : reader.GetString(7),
+                                    Name = reader.GetString(8),
+                                };
 
-                            requests.Add(request);
+                                requests.Add(request);
+                            }
                         }
                     }
                 }

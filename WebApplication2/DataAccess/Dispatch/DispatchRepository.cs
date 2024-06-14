@@ -42,7 +42,7 @@ namespace GatePass.DataAccess.Dispatch
                        "ui.Name " +
                        "FROM Requests r " +
                        "INNER JOIN UserInfo ui ON r.Sender_service_no = ui.ServiceNo " +
-                       "WHERE  r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 20 ) ORDER BY Created_date DESC";
+                       "WHERE  r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = NULL  ) ORDER BY Created_date DESC";
                 }
                 try
                 {

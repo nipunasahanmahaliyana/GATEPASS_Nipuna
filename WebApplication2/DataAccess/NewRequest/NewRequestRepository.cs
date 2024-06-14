@@ -360,7 +360,7 @@ namespace GatePass.DataAccess.ItemCategory
                             // Additional Query 2: Insert into Carrier_Details
                             if (!string.IsNullOrEmpty(carrierData["NICNo"]))
                             {
-                                string insertSql2 = "INSERT INTO Carrier_Details (Carrier_name, NIC_no, Contact_no) VALUES (@Carriername, @Carriernic, @Carriercontact)";
+                                string insertSql2 = "INSERT INTO Carrier_Details (Carrier_name, NIC_no, Contact_no ,travel_date ,vehicle_no) VALUES (@Carriername, @Carriernic, @Carriercontact,@CarrierTravel,@CarrierVehicle)";
 
                                 using (SqlCommand cmd2 = new SqlCommand(insertSql2, connection, transaction))
                                 {
@@ -369,6 +369,8 @@ namespace GatePass.DataAccess.ItemCategory
                                     cmd2.Parameters.AddWithValue("@Carriername", carrierData["CarrierName"]);
                                     cmd2.Parameters.AddWithValue("@Carriernic", carrierData["NICNo"]);
                                     cmd2.Parameters.AddWithValue("@Carriercontact", carrierData["Contactno"]);
+                                    cmd2.Parameters.AddWithValue("@CarrierTravel", carrierData["Travedate"]);
+                                    cmd2.Parameters.AddWithValue("@CarrierVehicle", carrierData["Vehicleno"]);
 
                                     int rowsAffected = cmd2.ExecuteNonQuery();
 

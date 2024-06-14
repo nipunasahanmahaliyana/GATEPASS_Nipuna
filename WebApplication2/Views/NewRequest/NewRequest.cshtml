@@ -81,8 +81,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="carrierNicNo">NIC No</label>
-                    <input type="text" class="form-control" id="carrierNicNo" name="carrierNicNo" oninput="validateNICOnInput()">
+                    <label for="carrierNicNo">Service No</label>
+                    <input type="text" class="form-control" id="carrierNicNo" name="carrierNicNo">
                     <span id="nicValidationMessage" style="color: red;"></span>
                 </div>
 
@@ -91,7 +91,18 @@
                     <input type="text" class="form-control" id="carrierContactNo" name="carrierContactNo" oninput="validateMobileOnInput()">
                     <span id="mobileValidationMessage" style="color: red;"></span>
                 </div>
+                
+                <div class="form-group">
+                    <label for="carrierContactNo">Travel date</label>
+                    <input type="date" class="form-control" id="carrierTravedate" name="carrierTravedate" oninput="validateMobileOnInput()">
+                    <span id="mobileValidationMessage" style="color: red;"></span>
+                </div>
 
+                <div class="form-group">
+                    <label for="carrierContactNo">Vehicle No</label>
+                    <input type="text" class="form-control" id="carrierVehicelno" name="carrierVehicelno" oninput="validateMobileOnInput()">
+                    <span id="mobileValidationMessage" style="color: red;"></span>
+                </div>
                 <div>
                     <br>
                     <button type="button" class="btn btn-danger" onclick="clearAndHideCarrierDetailsForm()">Remove</button>
@@ -671,6 +682,8 @@
         carrierData["CarrierName"] = $("#carrierName").val();
         carrierData["NICNo"] = $("#carrierNicNo").val();
         carrierData["Contactno"] = $("#carrierContactNo").val();
+        carrierData["Travedate"] = $("#carrierTravedate").val();
+        carrierData["Vehicleno"] = $("#carrierVehicelno").val();
 
         // Loop through the items
         for (var i = 1; i <= 10; i++) {

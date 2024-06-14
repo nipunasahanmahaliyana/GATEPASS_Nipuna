@@ -70,16 +70,43 @@ namespace GatePass.DataAccess.ExeApprove
 
         public void Approve(int requestRefNo)
         {
+            string loc = null;
+            int stage_id = 0;
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string updateQuery = "UPDATE Workprogress SET Stage_id = 2, Update_date = GETDATE(), Progress_status = 'Executive Approved', Viewed = 0 WHERE Request_ref_no = @requestRefNo";
+                    string query = "SELECT r.Out_location_name,r.Request_ref_no " +
+                    "FROM Requests r " +
+                    "WHERE r.Request_ref_no IN (SELECT Request_ref_no FROM Workprogress WHERE Stage_id = 1) AND r.Request_ref_no = @requestRefNo ORDER BY Created_date DESC";
 
+                    string updateQuery = "UPDATE Workprogress SET Stage_id = @stage_id, Update_date = GETDATE(), Progress_status = 'Executive Approved', Viewed = 0 WHERE Request_ref_no = @requestRefNo";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@requestRefNo", requestRefNo);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                loc = reader["Out_location_name"].ToString();
+                            }
+                        }
+                    }
+
+                    if(loc == "Headquarters")
+                    {
+                        stage_id = 2;
+                    }
+                    else
+                    {
+                        stage_id = 5;
+                    }
                     using (SqlCommand command = new SqlCommand(updateQuery, connection))
                     {
                         command.Parameters.AddWithValue("@requestRefNo", requestRefNo);
+                        command.Parameters.AddWithValue("@stage_id", stage_id);
                         command.ExecuteNonQuery();
                     }
                 }
