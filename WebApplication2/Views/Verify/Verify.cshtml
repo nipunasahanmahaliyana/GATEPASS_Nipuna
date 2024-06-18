@@ -1,4 +1,4 @@
-﻿@model List<GatePass_Project.Models.VerifyModel>
+@model List<GatePass_Project.Models.VerifyModel>
 
 @{
     ViewData["Title"] = "Verify Page";
@@ -23,17 +23,27 @@
 </div>
 
 <div class="form-group">
-    <span>Show Entries </span>
-    <select id="pageSizeDropdown" class="form-control" style="width: 600px; display: inline-block; margin: 0 auto;">
-        <option value="" disabled selected hidden>Select the number of entries</option>
-        <option value="2">2</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="50">50</option>
-    </select>
+    <div class="row">
+        <div class="col-6">
+            @* <span>Show Entries </span> *@
+            <select id="pageSizeDropdown" class="form-control" style="width:450px; display: inline-block; margin: 0 auto;">
+                <option value="" disabled selected hidden>Select the number of entries</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+            </select>
+        
+        
+            
+            <button id="resetButton" class="btn btn-danger text-decoration-none" style="margin-left: 5px;">Reset</button>
+       
+        </div>
+    </div>
 </div>
-
-<br><br/>
+<br>
+<br />
 
 
 <ul class="nav mb-2" id="myTabs" role="tablist">
