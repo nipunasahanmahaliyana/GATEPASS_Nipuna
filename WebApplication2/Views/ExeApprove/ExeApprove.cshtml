@@ -312,7 +312,7 @@
                 <th>Created Date</th>
                 <th>EO Service No</th>
                 <th>Carrier NIC</th>
-
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -360,7 +360,7 @@
     $(document).ready(function () {
         var path = window.location.pathname.split("/").pop();
 
-        if (path === "Pending" || path === "Approved" || path === "Rejected") {
+        if (path === "Approved" || path === "Rejected" || path =="Expired" ) {
             $("#myTabs a[href='#" + path.toLowerCase() + "']").addClass("active");
             $("#myTabsContent div.tab-pane").removeClass("show active");
             $("#" + path.toLowerCase()).addClass("show active");
