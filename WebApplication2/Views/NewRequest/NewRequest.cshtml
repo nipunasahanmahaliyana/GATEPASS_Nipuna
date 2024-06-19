@@ -257,28 +257,29 @@
 
             <div id="receiverDetailsFields" style="display: none;">
                 <div class="form-group">
-                    <label for="receiverServiceNo">Service No</label>
+                    <label for="receiverServiceNotext">Service No</label>
                     <input type="text" class="form-control" id="receiverServiceNo" name="receiverServiceNo">
                 </div>
 
                 <div class="form-group">
                     <label for="receiverGroup">Group</label>
-                    <input type="text" class="form-control" id="receiverGroup" name="receiverGroup">
+                    <input type="text" class="form-control" id="receiverGroup" name="receiverGroup" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="receiverName">Name</label>
-                    <input type="text" class="form-control" id="receiverName" name="receiverName">
+                    <input type="text" class="form-control" id="receiverName" name="receiverName" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="receiverContactNo">Contact No</label>
-                    <input type="text" class="form-control" id="receiverContactNo" name="receiverContactNo">
+                    <input type="text" class="form-control" id="receiverContactNo" name="receiverContactNo" readonly>
                 </div>
 
                 <div class="form-group">
                     <br>
-                    <button type="button" class="btn btn-warning" id="clearReceiverDetails">Clear</button>
+                    <button type="button" class="btn btn-warning" id="clearReceiverDetails" onclick="fetchReceiverDetails()">Add</button>
+                    <button type="button" class="btn btn-warning" id="clearReceiverDetails" onclick="clearReceiverDetailsFields()">Clear</button>
                 </div>
             </div>
 
@@ -588,7 +589,7 @@
         });
     }
 
-    document.getElementById("receiverServiceNo").addEventListener("change", fetchReceiverDetails);
+    document.getElementById("receiverServiceNo").addEventListener("blur",fetchReceiverDetails);
 
 
     // Function to Clear Receiver Details Fields
