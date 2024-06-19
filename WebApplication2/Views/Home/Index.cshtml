@@ -1,21 +1,19 @@
-﻿@{
+@{
     ViewData["Title"] = "Index";
 }
 
 <style>
     body {
-        background-image: url('/images/back.jpeg');
-        background-size: cover;
+        background-image: url('/images/GATE PASS SYSTEM-9.png');
+        background-size: cover; /* Adjust the size as needed */
+        background-repeat: no-repeat; /* Prevents the background image from repeating */
         background-position: center;
+        background-attachment: fixed; /* Ensures the background image stays fixed while scrolling */
     }
 
-    .text-center{
-        color:black;
+    .text-center {
+        color: black;
+        margin-top: 20px; /* Add some margin to the top for better visibility */
     }
 </style>
 
-<div class="text-center">
-    Welcome @ViewBag.UserName
-    
-   
-</div>

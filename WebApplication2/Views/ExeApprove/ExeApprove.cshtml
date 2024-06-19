@@ -1,4 +1,4 @@
-﻿@model List<GatePass_Project.Models.ExeApproveModel>
+@model List<GatePass_Project.Models.ExeApproveModel>
 
 @{
     ViewData["Title"] = "Exe Approve Page";
@@ -82,11 +82,11 @@
 
 
 
+
 <!-- Move the search input field to the center and make it shorter with spacing -->
-<div class="d-flex justify-content-center">
+<div class="">
     <div class="input-group mb-3" style="max-width: 600px;">
         <input type="text" id="employeeNameSearch" class="form-control" placeholder="Search by Employee Name" style="margin-right: 5px;">
-
         <div class="input-group-append" style="margin-left: 5px;">
             <button class="btn btn-primary" id="searchButton" type="button">Search</button>
             <button class="btn btn-secondary" id="resetButton" type="button">Reset</button>
@@ -96,19 +96,24 @@
 
 
 <div class="form-group">
-    <span>Show Entries </span>
-    <select id="pageSizeDropdown" class="form-control" style="width: 600px; display: inline-block; margin: 0 auto;">
-        <option value="" disabled selected hidden>Select the number of entries</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="50">50</option>
-    </select>
+    <div class="row">
+        <div class="col-6">
+            @* <span>Show Entries </span> *@
+            <select id="pageSizeDropdown" class="form-control" style="width:450px; display: inline-block; margin: 0 auto;">
+                <option value="" disabled selected hidden>Select the number of entries</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+            </select>
+            <button id="resetButton" class="btn btn-danger text-decoration-none" style="margin-left: 5px;">Reset</button>
+        </div>
+        
+    </div>
 </div>
 <br>
 <br />
-
 
 <ul class="nav nav-tabs" id="myTabs" role="tablist">
 

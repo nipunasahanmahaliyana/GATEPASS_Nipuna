@@ -1,4 +1,4 @@
-﻿@model List<GatePass_Project.Models.MyRequestModel>
+@model List<GatePass_Project.Models.MyRequestModel>
 
 @{
     ViewData["Title"] = "My Request";
@@ -9,11 +9,11 @@
 </div>
 <br>
 
-<div class="form-group ">
+<div class="form-group">
     <div class="row">
         <div class="col-6">
             @* <span>Show Entries </span> *@
-            <select id="pageSizeDropdown" class="form-control" style="width: 600px; display: inline-block; margin: 0 auto;">
+            <select id="pageSizeDropdown" class="form-control" style="width:450px; display: inline-block; margin: 0 auto;">
                 <option value="" disabled selected hidden>Select the number of entries</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -21,15 +21,13 @@
                 <option value="10">10</option>
                 <option value="50">50</option>
             </select>
-        </div>
-        <div class="col-1">
-            <button id="resetButton" class="btn btn-danger text-decoration-none">Reset</button>
+        
+            <button id="resetButton" class="btn btn-danger text-decoration-none" style="margin-left: 5px;">Reset</button>
         </div>
     </div>
 </div>
 <br>
 <br />
-
 
 <!-- My request table -->
 <div class="MyRequest-Container_row2">
@@ -74,22 +72,18 @@
                                 <a href="@Url.Action("RequestStatus", "MyRequest", new { id = request.Request_ref_no })" class=""><button class="btn btn-sm text-decoration-none btn-primary">Status</button></a>
                             </div>
                         </td>
-                       <!-- <td>
-                            <div class="d-inline">
-                                <a href="@Url.Action("MyRequestDetails", "MyRequest", new { id = request.Request_ref_no })" class=""><button class="btn btn-sm text-decoration-none btn-primary">PDF</button></a>
-                            </div>
-                        </td>
-                         -->
+                        <!-- <td>
+                             <div class="d-inline">
+                                 <a href="@Url.Action("MyRequestDetails", "MyRequest", new { id = request.Request_ref_no })" class=""><button class="btn btn-sm text-decoration-none btn-primary">PDF</button></a>
+                             </div>
+                         </td>
+                          -->
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
-
-
-
-
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -114,11 +108,7 @@
     });
 </script>
 
-
-
-
 <style>
-
     .table {
         font-size: 13px;
         border-spacing: 0 15px;
@@ -164,5 +154,4 @@
         text-decoration: none;
         color: inherit;
     }
-
 </style>
