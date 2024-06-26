@@ -31,9 +31,20 @@ namespace GatePass_Project.Controllers
         {
             var sessionUserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = sessionUserName;
+            var serviceNo = "";
+
             try
             {
-                var serviceNo = HttpContext.Session.GetString("UserName");
+                if (HttpContext.Session.GetString("UserName") != "")
+                {
+                    serviceNo = HttpContext.Session.GetString("UserName");
+                }
+                else
+                {
+                    serviceNo = HttpContext.Session.GetString("ServiceNo");
+                }
+               
+   
 
                 var requests = _repository.ExeApprove(serviceNo);
                 return View(requests);
