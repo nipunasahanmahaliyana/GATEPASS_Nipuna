@@ -39,7 +39,7 @@ namespace GatePass_Project.Controllers
                 {
                     serviceNo = HttpContext.Session.GetString("UserName");
                 }
-                else
+                else if(HttpContext.Session.GetString("ServiceNo") != "")
                 {
                     serviceNo = HttpContext.Session.GetString("ServiceNo");
                 }
