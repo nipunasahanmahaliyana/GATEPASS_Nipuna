@@ -1,0 +1,249 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row align-items-center">
+            <div class="col-md-6 col-sm-2 col-2 left-div">
+            </div>
+            <div class="col-md-6 col-sm-10 col-8 ">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 offset-sm-2 col-sm-8 login-box">
+                        <img src="~/Images/logo.png" class="img-fluid national-logo" alt="national symbol" />
+                        <div class="pad-header-text">
+                            <h2><p class="head-txt">Memo Creator</p></h2>
+                        </div>
+                        <div>
+                            <form id="login">
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-12 form-group alert alert-danger" id="alertInfoDiv">
+                                        <label role="alert" id="alertInfo"></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <input class="form-control" type="text" placeholder="Service No." id="SERVICE_NO" name="SERVICE_NO">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <input class="form-control" type="password" placeholder="Password" id="PASSWORD" name="PASSWORD">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="button" id="buttonLogin" class="btn btn-danger wild-btn" value="Sign In">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_otp" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title text-white">Verify your Number</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-light">
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="~/Images/otp.png" class="rounded mx-auto d-block" alt="otp">
+                    </div>
+                    <div class="col-md-9">
+                        <label class="" style="padding-bottom:3px;padding-top:3px;">Enter your OTP code here</label>
+                        <input class="form-control" type="number" maxlength="6" placeholder="enter 6 digit number" id="otpNo">
+                    </div>
+                    <div class="offset-md-3 col-md-9">
+                        <label id="infoOtp" class="hidden" style="color:red;"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success" id="sendCode">Verify</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts_external{
+
+    <script type="text/javascript">
+
+        var dataObj;
+        $("#alertInfoDiv").hide();
+        $("#alertInfo").hide();
+
+
+        $("#buttonLogin").click(function () {
+            checkLogin();
+            //return false;
+            $("#loader").prop('hidden', false);
+        });
+
+        function checkLogin() {
+
+            /*var user = {};
+            user.SERVICE_NO = $("#serviceNo").val();
+            user.PASSWORD = $("#pwd").val();*/
+
+            var data = $("#login").serialize();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("IndexLogin")',
+                dataType: "json",
+                //data: JSON.stringify(user),
+                data: data,
+                //contentType: "application/json; charset=utf-8",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                success: function (data) {
+                    if (data != null) {
+                        if (data.isSuccess) {
+                            dataObj = data.dataBundle;
+                            var j = data.dataBundle.IS_2FAC;
+                            if (data.dataBundle.IS_2FAC == 0) {
+
+                                $("#loader").prop('hidden', true);
+                                window.location.href = "@Url.Action("Index", "User")";
+                            } else {
+                                checkOTP(data.dataBundle);
+                            }
+                            $("#alertInfoDiv").hide();
+                            $("#alertInfo").hide();
+                        } else {
+                            $("#loader").prop('hidden', true);
+                            $("#alertInfoDiv").show();
+                            $("#alertInfo").show();
+                            $("#alertInfo").html(data.errorShow + " | " + data.errorMessage);
+							if (data.errorMessage == "Captcha code invalid") {
+                                location.reload();
+                            }
+                        }
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    //jqXHR, exception
+                    var error = ajaxError(jqXHR, exception);
+                    $("#loader").prop('hidden', true);
+                    $("#alertInfoDiv").show();
+                    $("#alertInfo").show();
+                    $("#alertInfo").html(error.toString());
+                }
+            });
+        }
+
+        function checkOTP(data) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetOTP")',
+                dataType: "json",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    $("#loader").prop('hidden', true);
+                    $("#modal_otp").modal('show');
+                    $("#otpNo").val("");
+
+                    if (data != null) {
+                        if (data.isSuccess) {
+                            console.log("otp send success");
+                            //$("#sendCode").prop("disabled", false);
+                            $("#infoOtp").addClass("hidden");
+                        } else {
+                            //$("#sendCode").prop("disabled", true);
+                            $("#infoOtp").removeClass("hidden");
+                            $("#infoOtp").html(data.errorShow + " (" + data.errorMessage + ")");
+                        }
+                    } else {
+                        //$("#sendCode").prop("disabled", true);
+                        $("#infoOtp").removeClass("hidden");
+                        $("#infoOtp").html(data.errorShow + " (" + data.errorMessage + ")");
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    //jqXHR, exception
+                    var error = ajaxError(jqXHR, exception);
+                    $("#modal_otp").modal('show');
+                    $("#otpNo").val("");
+                    //$("#sendCode").prop("disabled", true);
+                    $("#infoOtp").removeClass("hidden");
+                    $("#infoOtp").html("" + error.toString());
+                }
+            });
+        }
+
+        $("#sendCode").click(function () {
+            //$("#sendCode").prop("disabled", true);
+
+            $("#loader").prop('hidden', false);
+            var option = {};
+            option.otpCode = $("#otpNo").val();
+
+            var obj = {};
+            obj.response = option;
+            obj.user = dataObj;
+
+            console.log("entered otp is:" + option.otpCode);
+            verifyOTP(obj);
+
+            return false;
+        });
+
+        function verifyOTP(data) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("VerifyOTP")',
+                dataType: "json",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    $("#loader").prop('hidden', true);
+                    if (data != null) {
+                        if (data.isSuccess) {
+                            console.log("verifyed success");
+                            $("#infoOtp").addClass("hidden");
+                            $("#modal_otp").modal('hide');
+                            window.location.href = "@Url.Action("Index", "User")";
+                        } else {
+                            console.log("verifyed failed");
+                            $("#infoOtp").removeClass("hidden");
+                            $("#infoOtp").html(data.errorShow + " (" + data.errorMessage + ")");
+                            //$("#sendCode").prop("disabled", true);
+                            window.location.href = "@Url.Action("IndexLogin", "Login")";
+                        }
+                    } else {
+                        console.log("verifyed failed");
+                        $("#infoOtp").removeClass("hidden");
+                        $("#infoOtp").html(data.errorShow + " (" + data.errorMessage + ")");
+                        //$("#sendCode").prop("disabled", true);
+                        window.location.href = "@Url.Action("IndexLogin", "Login")";
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    //jqXHR, exception
+                    var error = ajaxError(jqXHR, exception);
+
+                    $("#loader").prop('hidden', true);
+                    $("#otpNo").val("");
+                    //$("#sendCode").prop("disabled", true);
+                    $("#infoOtp").removeClass("hidden");
+                    $("#infoOtp").html("" + error.toString());
+                }
+            });
+        }
+    </script>
+}
+

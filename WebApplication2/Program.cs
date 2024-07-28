@@ -12,9 +12,11 @@ using GatePass.DataAccess.MyReceipt;
 using GatePass.DataAccess.ItemTracker;
 using GatePass.DataAccess.SystemLocation;
 using GatePass.DataAccess.ItemCategory;
+using GatePass;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

@@ -8,11 +8,13 @@ namespace GatePass.DataAccess.ItemCategory
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<NewRequestRepository> _logger;
+        private readonly IEmailSender _emailSender;
 
-        public NewRequestRepository(IConfiguration configuration, ILogger<NewRequestRepository> logger)
+        public NewRequestRepository(IConfiguration configuration, ILogger<NewRequestRepository> logger,IEmailSender emailSender)
         {
             _configuration = configuration;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         public List<string> GetItemCategories()
@@ -242,6 +244,32 @@ namespace GatePass.DataAccess.ItemCategory
             return "Unknown";
         }
 
+        public string GetExecEmail(string ExecutiveOfficer)
+        {
+            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                // Construct a SQL query to retrieve the Employee number by name
+                var query = "SELECT Email FROM ExecutiveInfo WHERE ServiceNo = @ExecutiveOfficerServiceNo";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ExecutiveOfficerServiceNo", ExecutiveOfficer);
+
+                    object result = command.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+#pragma warning disable CS8603 // Possible null reference return.
+                        return result.ToString();
+#pragma warning restore CS8603 // Possible null reference return.
+                    }
+                }
+            }
+
+            // Return a default value if not found (you may want to handle this differently)
+            return "Unknown";
+        }
 
         public int GetRequestRefNoForItem()
         {
@@ -332,6 +360,8 @@ namespace GatePass.DataAccess.ItemCategory
             var files = annexLoc;
 
             int isdone = 0;
+            string serviceNo = null;
+            string ExecutiveOfficer = null;
             try
             {
                 var connectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -348,10 +378,10 @@ namespace GatePass.DataAccess.ItemCategory
                         try
                         {
                             // Use the requestData and carrierData dictionaries
-                            string serviceNo = requestData["ServiceNo"];
+                            serviceNo = requestData["ServiceNo"];
                             string sltInLocation = requestData["SLTInLocation"];
                             string outLocation = requestData["OutLocation"];
-                            string ExecutiveOfficer = requestData["ExecutiveOfficer"];
+                            ExecutiveOfficer = requestData["ExecutiveOfficer"];
                             string nicNo = requestData["NICNo"];
                             string receiverServiceNo = requestData["ReceiverServiceNo"];
 
@@ -501,8 +531,7 @@ namespace GatePass.DataAccess.ItemCategory
                                     }
                                 }
                             }
-
-
+                          
 
                             transaction.Commit();
                             isdone = 1; // Success
@@ -516,6 +545,23 @@ namespace GatePass.DataAccess.ItemCategory
                         }
                     }
                 }
+                try
+                {
+                    string executiveOfficerServiceNo = GetEmployeeServiceNoByName(ExecutiveOfficer);
+                    string email = GetExecEmail(executiveOfficerServiceNo);
+
+                    var subject = "Excutive Approvel";
+                    var message = $"Requesting your approvel from service number {serviceNo}: ,please login GATE PASS System";
+
+                    await _emailSender.SendEMailAsync(email, subject, message);
+                    Console.WriteLine("Message not sent");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Message not sent");
+                    
+                }
+
             }
             catch (Exception ex)
             {
